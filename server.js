@@ -12,12 +12,10 @@ app.use(cors());
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
-// 🔗 Serve os arquivos HTML, CSS, JS da pasta "Projeto Alessandro"
-app.use(express.static('C:/Users/diego/OneDrive/Desktop/Projeto Alessandro'));
+app.use(express.static(path.join(__dirname, 'public')));
 
-// 🔗 Rota principal: carrega o index.html
 app.get('/', (req, res) => {
-  res.sendFile(path.join('C:/Users/diego/OneDrive/Desktop/Projeto Alessandro/index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // 📄 Rota para gerar o PDF com Puppeteer

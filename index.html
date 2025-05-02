@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Gerador de Propostas FORFIRE</title>
+      
+        <!-- CSS -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+        <link rel="stylesheet" href="style.css">
+      
+        <!-- JS (externos primeiro) -->
+        <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+        <script src="https://unpkg.com/pdf-lib@1.16.0/dist/pdf-lib.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+      </head>
+<body>
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <h1 class="text-center my-4">Gerador de Propostas FORFIRE</h1>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 no-print">
+                <!-- Substituir a seção DADOS DA PROPOSTA existente por esta versão atualizada -->
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5>DADOS DA PROPOSTA</h5>
+                        <button id="nova-proposta" class="btn btn-primary btn-sm proposal-btn">NOVA PROPOSTA</button>
+                        <button id="limpar-proposta" class="btn btn-danger btn-sm proposal-btn ms-2">LIMPAR</button>
+                    </div>
+                <div class="card-body">
+                    <div class="mb-2">
+                        <label for="company-selector" class="form-label">Empresa Emissora</label>
+                        <select id="company-selector" class="form-select form-select-sm">
+                            <option value="forfire1">FORFIRE Prevenção de Incêndio</option>
+                            <option value="forfire2">FORFIRE Serviços e Comércio</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-2">
+                        <label for="proposal-type" class="form-label">Tipo de Proposta</label>
+                        <select id="proposal-type" class="form-select form-select-sm">
+                            <option value="Proposta Comercial">Proposta Comercial</option>
+                            <option value="Proposta Técnica">Proposta Técnica</option>
+                        </select>
+                    </div>                   
+                    <div class="mb-3">
+                        <label class="form-label">Número da Proposta</label>
+                        <div class="input-group">
+                            <input type="text" id="proposal-number" class="form-control form-control-sm" readonly>
+                            <button id="toggle-edit-number" class="btn btn-outline-secondary btn-sm">Editar</button>
+                        </div>
+                        <small id="proposal-status-msg" class="text-success"></small>
+                    </div>        
+                    <div class="mb-3">
+                        <label class="form-label">Referência</label>
+                        <input type="text" id="proposal-reference" class="form-control form-control-sm" placeholder="Digite a referência da proposta...">
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button class="btn btn-sm btn-outline-secondary" id="proposal-ok-button">Aplicar</button>
+                    </div>                                                                       
+                </div>    
+            </div>
+
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5>DADOS DO CLIENTE</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="client-select" class="form-label">Cliente</label>
+                            <div id="client-select-container" class="d-flex">
+                                <select class="form-select me-2" id="client-select">
+                                    <option value="">Selecione um cliente...</option>
+                                </select>
+                                <button type="button" class="btn btn-sm btn-primary" id="add-client-btn">ADD</button>
+                            </div>
+                            <div id="custom-client-container" style="display: none; margin-top: 8px;">
+                                <div class="d-flex">
+                                    <input type="text" class="form-control form-control-sm me-2" id="custom-client-name" placeholder="Nome do cliente">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" id="back-to-select-btn">Voltar</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="client-contact" class="form-label">A/C</label>
+                            <input type="text" class="form-control" id="client-contact" value="">
+                        </div>
+                        
+                        <!-- Campos ocultos para armazenar os dados do cliente selecionado -->
+                        <input type="hidden" id="client-name" value="">
+                        <input type="hidden" id="location-name" value="">
+                        <input type="hidden" id="location-address" value="">
+                        <div class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="client-ok-button">OK</button>
+                        </div>
+                    </div>                    
+                </div>
+
+                <!-- BLOCO REFERÊNCIA -->
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">APRESENTAÇÃO</h5>
+                        <button type="button" id="edit-preamble" class="btn btn-sm btn-outline-secondary">Editar</button>
+                        <input type="hidden" id="preambleDescription" value="">
+                    </div>
+                </div>
+                
+                <!-- OBJETO -->
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">OBJETO</h5>
+                        <button type="button" id="edit-object" class="btn btn-sm btn-outline-secondary">Editar</button>
+                        <input type="hidden" id="objectDescription" value="">
+                    </div>
+                </div>
+
+
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5>SERVIÇOS</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input project-option" type="checkbox" value="CA - CERTIFICADO DE APROVAÇÃO" id="project-option-1">
+                                <label class="form-check-label" for="project-option-1">CA - CERTIFICADO DE APROVAÇÃO</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input project-option" type="checkbox" value="CMI - CASA DE MÁQUINA DE INCÊNDIO" id="project-option-2">
+                                <label class="form-check-label" for="project-option-2">CMI - CASA DE MÁQUINA DE INCÊNDIO</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input project-option" type="checkbox" value="EXTINTOR DE INCÊNDIO" id="project-option-3">
+                                <label class="form-check-label" for="project-option-3">EXTINTOR DE INCÊNDIO</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input project-option" type="checkbox" value="HIDRANTE URBANO" id="project-option-4">
+                                <label class="form-check-label" for="project-option-4">HIDRANTE URBANO</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input project-option" type="checkbox" value="ILUMINAÇÃO DE EMERGÊNCIA" id="project-option-5">
+                                <label class="form-check-label" for="project-option-5">ILUMINAÇÃO DE EMERGÊNCIA</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input project-option" type="checkbox" value="MANGUEIRA DE INCÊNDIO" id="project-option-6">
+                                <label class="form-check-label" for="project-option-6">MANGUEIRA DE INCÊNDIO</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input project-option" type="checkbox" value="MANUTENÇÃO PREVENTIVA" id="project-option-7">
+                                <label class="form-check-label" for="project-option-7">MANUTENÇÃO PREVENTIVA</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input project-option" type="checkbox" value="MANUTENÇÃO PREVENTIVA E CORRETIVA" id="project-option-8">
+                                <label class="form-check-label" for="project-option-8">MANUTENÇÃO PREVENTIVA E CORRETIVA</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input project-option" type="checkbox" value="PROJETO DE INCÊNDIO" id="project-option-9">
+                                <label class="form-check-label" for="project-option-9">PROJETO DE INCÊNDIO</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input project-option" type="checkbox" value="PROJETO DE INCÊNDIO + LEV ARQ" id="project-option-10">
+                                <label class="form-check-label" for="project-option-10">PROJETO DE INCÊNDIO + LEV ARQ</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input project-option" type="checkbox" value="PROJETO DE INCÊNDIO ATUALIZAÇÃO" id="project-option-11">
+                                <label class="form-check-label" for="project-option-11">PROJETO DE INCÊNDIO ATUALIZAÇÃO</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input project-option" type="checkbox" value="PROJETO EXECUTIVO" id="project-option-12">
+                                <label class="form-check-label" for="project-option-12">PROJETO EXECUTIVO</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input project-option" type="checkbox" value="PROPOSTA TÉCNICA DE CONTRATO" id="project-option-13">
+                                <label class="form-check-label" for="project-option-13">PROPOSTA TÉCNICA DE CONTRATO</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input project-option" type="checkbox" value="REDE DE HIDRANTES" id="project-option-14">
+                                <label class="form-check-label" for="project-option-14">REDE DE HIDRANTES</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input project-option" type="checkbox" value="SAI" id="project-option-15">
+                                <label class="form-check-label" for="project-option-15">SAI</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input project-option" type="checkbox" value="SDAI" id="project-option-16">
+                                <label class="form-check-label" for="project-option-16">SDAI</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input project-option" type="checkbox" value="SINALIZAÇÃO" id="project-option-17">
+                                <label class="form-check-label" for="project-option-17">SINALIZAÇÃO</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input project-option" type="checkbox" value="SPDA" id="project-option-18">
+                                <label class="form-check-label" for="project-option-18">SPDA</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input project-option" type="checkbox" value="SPRINKLERS" id="project-option-19">
+                                <label class="form-check-label" for="project-option-19">SPRINKLERS</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input project-option" type="checkbox" value="VENDA DE MATERIAIS E EQUIPAMENTOS" id="project-option-20">
+                                <label class="form-check-label" for="project-option-20">VENDA DE MATERIAIS E EQUIPAMENTOS</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input project-option" type="checkbox" value="OUTROS" id="project-option-21">
+                                <label class="form-check-label" for="project-option-21">OUTROS</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">ORÇAMENTO</h5>
+                        <button type="button" id="edit-budget" class="btn btn-sm btn-outline-secondary">Editar</button>
+                        <input type="hidden" id="budgetDescription" value="">
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">OBSERVAÇÕES</h5>
+                        <button type="button" id="edit-observations" class="btn btn-sm btn-outline-secondary">Editar</button>
+                        <input type="hidden" id="observationsDescription" value="">
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">ESCLARECIMENTOS</h5>
+                        <button type="button" id="edit-clarifications" class="btn btn-sm btn-outline-secondary">Editar</button>
+                        <input type="hidden" id="clarificationsDescription" value="">
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-footer">
+                        <button type="button" class="btn btn-primary w-100 mb-2" id="update-preview">Atualizar Visualização</button>
+                        <button type="button" class="btn btn-success w-100" id="print-button">Gerar PDF</button>
+                        <button type="button" class="btn btn-outline-dark w-100 mt-2" id="open-saved-proposals">Minhas Propostas</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-8">
+                <div id="proposal-preview">
+                    
+                    <!-- O conteúdo abaixo só será visível após preencher os campos e clicar em "Atualizar Visualização" -->
+                    <div class="proposal-body">
+                        <div class="proposal-content"> <!-- NOVA DIV COMEÇA AQUI -->
+                            <div class="header">
+                                <div class="header-left">
+                                    <img src="Z0TS6vg.jpeg" alt="Logo da FORFIRE" style="max-height: 60px; width: auto; display: block;"> <!-- https://i.imgur.com/ -->
+                                    <div class="text-start">
+                                        <div id="preview-company-name">FORFIRE Prevenção de Incêndio</div>
+                                        <div id="preview-company-address">Av. Embaixador Abelardo Bueno...</div>
+                                        <div id="preview-company-cnpj">CNPJ: 23.211.427/0001-34 / Inscrição Estadual: 87.017.290</div>
+                                    </div>                                                      
+                                </div>
+                                <div class="header-right">
+                                    <div>Fone (21) 97031-6310 | 3988-1700</div>
+                                    <div>www.forfire.com.br | @eusouforfire</div>
+                                </div>
+                            </div>
+                    
+                            <div id="proposal-content" class="hidden">
+                                <div class="proposal-date">
+                                    <div id="preview-proposal-date"></div>
+                                </div>
+                                <div class="client-info">
+                                    <!-- Conteúdo será inserido dinamicamente pelo JS -->
+                                </div>                                
+                                <div class="proposal-number">
+                                    <div id="preview-proposal-header" class="proposal-id-line"></div>
+                                </div>
+                                <div class="reference">
+                                    <div id="reference-section" style="display: none;">
+                                        <!-- Removido o section-title redundante, mas o texto "REFERÊNCIA" será mantido via JavaScript -->
+                                        <div id="preview-proposal-reference"></div>
+                                    </div>
+                                </div>
+                                <div id="preview-preamble"></div>
+                                <div id="preview-object"></div>
+                                <div id="preview-projects-wrapper"></div>
+                                <div id="budget-section"></div>
+                                <div id="preview-observations"></div>
+                                <div id="preview-clarifications"></div>
+                            </div>
+                        </div> <!-- NOVA DIV TERMINA AQUI -->
+                    
+                        <div class="footer" id="proposal-footer">
+                            <p>Sem mais e a dispor para qualquer esclarecimento, subscrevemo-nos.</p>
+                            <p>Atenciosamente,</p>
+                            <div class="signature">
+                                <div class="signature-line"></div>
+                                <p>Alessandro Freitas<br>Diretor Executivo</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                <div id="proposal-print-area" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal OBJETO -->
+    <div class="modal fade" id="objectModal" tabindex="-1" aria-labelledby="objectModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title">OBJETO</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+            <div id="quillObjectEditor" style="height: 200px;"></div>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            <button type="button" class="btn btn-primary" id="confirmObject">Confirmar</button>
+            </div>
+        </div>
+        </div>
+    </div>  
+
+    <!-- Modal para descrição do projeto -->
+    <div class="modal fade" id="projectDescriptionModal" tabindex="-1" aria-labelledby="projectDescriptionModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="projectDescriptionModalLabel">Descrição do Serviço</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="quillProjectEditor" style="height: 200px;"></div>
+                    <input type="hidden" id="currentProjectId" value="">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-primary" id="confirmProjectDescription">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para edição do preâmbulo -->
+    <div class="modal fade" id="preambleModal" tabindex="-1" aria-labelledby="preambleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="preambleModalLabel">APRESENTAÇÃO</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="quillPreambleEditor" style="height: 200px;"></div>
+                    <input type="hidden" id="currentProjectId" value="">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-primary" id="confirmPreamble">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Observações -->
+    <div class="modal fade" id="observationsModal" tabindex="-1" aria-labelledby="observationsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title">OBSERVAÇÕES</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+            <div id="quillObservationsEditor" style="height: 200px;"></div>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            <button type="button" class="btn btn-primary" id="confirmObservations">Confirmar</button>
+            </div>
+        </div>
+        </div>
+    </div>
+  
+    <!-- Modal Esclarecimentos -->
+    <div class="modal fade" id="clarificationsModal" tabindex="-1" aria-labelledby="clarificationsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title">ESCLARECIMENTOS</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+            <div id="quillClarificationsEditor" style="height: 200px;"></div>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            <button type="button" class="btn btn-primary" id="confirmClarifications">Confirmar</button>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <!-- Modal Orçamento -->
+    <div class="modal fade" id="budgetModal" tabindex="-1" aria-labelledby="budgetModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">TEXTO DO ORÇAMENTO</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="quillBudgetEditor" style="height: 200px;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-primary" id="confirmBudget">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Minhas Propostas -->
+    <div class="modal fade" id="savedProposalsModal" tabindex="-1" aria-labelledby="savedProposalsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="savedProposalsModalLabel">Minhas Propostas Salvas</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+            <ul class="list-group" id="saved-proposals-list"></ul>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger me-auto" id="delete-selected" disabled>
+                    Excluir selecionadas
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+        </div>
+    </div>
+  
+  
+    <script type="module" src="main.js"></script>
+<div id="pdf-output" style="display: none;"></div>
+</body>
+</html>

@@ -2,6 +2,6 @@ services:
   - type: web
     name: ProjetoForFire
     env: node
-    buildCommand: npm install
+    buildCommand: npm ci   # mais rápido e limpo que npm install
     startCommand: npm start
     branch: main

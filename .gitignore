@@ -1,0 +1,18 @@
+# Dependências
+/node_modules
+/.pnp
+.pnp.js
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ambiente
+.env
+
+# Sistema
+.DS_Store
+
+# Build do Render (se gerar pasta de build localmente)
+/build

@@ -129,7 +129,3 @@ app.post('/generate-pdf', async (req, res) => {
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Servidor rodando em http://localhost:${PORT} e aceitando conexões externas`);
 });
-// ▶️ Inicia o servidor
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Servidor rodando em http://localhost:${port} e aceitando conexões externas`);
-});

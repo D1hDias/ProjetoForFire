@@ -318,7 +318,7 @@ const textosPadraoPorServico = {
 // Carregamento de clientes do Excel
 async function carregarClientesDeExcel() {
     try {
-        const response = await fetch('./clientes.xlsx');
+        const response = await fetch('clientes.xlsx');
         const arrayBuffer = await response.arrayBuffer();
         const data = new Uint8Array(arrayBuffer);
         const workbook = XLSX.read(data, { type: 'array' });
@@ -1463,8 +1463,14 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    // printWindow.print();
+
+     document.getElementById('print-button').addEventListener('click', function () {
+        window.print();
+     });
+
     // Função para gerar PDF usando o servidor Node.js com Puppeteer
-    document.getElementById('print-button').addEventListener('click', function () {
+    document.getElementById('print-button-old').addEventListener('click', function () {
     // Primeiro atualizamos a visualização
     updatePreview();
     
@@ -1575,7 +1581,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const fileName = `${document.getElementById('proposal-number').value || 'proposta'}.pdf`;
             
             // URL do servidor Node.js - ajuste se necessário
-            const serverUrl = 'http://localhost:3000/generate-pdf';
+            const serverUrl = `${window.location.origin}/generate-pdf`;
             
             // Enviar o HTML para o servidor
             fetch(serverUrl, {

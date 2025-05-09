@@ -1463,8 +1463,14 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    // printWindow.print();
+
+     document.getElementById('print-button').addEventListener('click', function () {
+        window.print();
+     });
+
     // Função para gerar PDF usando o servidor Node.js com Puppeteer
-    document.getElementById('print-button').addEventListener('click', function () {
+    document.getElementById('print-button-old').addEventListener('click', function () {
     // Primeiro atualizamos a visualização
     updatePreview();
     

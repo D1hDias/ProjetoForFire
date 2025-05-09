@@ -1,7 +1,6 @@
 services:
   - type: web
     name: ProjetoForFire
-    env: node
-    buildCommand: npm ci   # mais rápido e limpo que npm install
-    startCommand: npm start
+    env: docker
+    dockerfilePath: ./Dockerfile
     branch: main

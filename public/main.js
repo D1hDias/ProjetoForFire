@@ -1575,7 +1575,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const fileName = `${document.getElementById('proposal-number').value || 'proposta'}.pdf`;
             
             // URL do servidor Node.js - ajuste se necessário
-            const serverUrl = 'http://localhost:3000/generate-pdf';
+            const serverUrl = `${window.location.origin}/generate-pdf`;
             
             // Enviar o HTML para o servidor
             fetch(serverUrl, {

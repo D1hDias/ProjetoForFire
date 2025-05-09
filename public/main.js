@@ -318,7 +318,7 @@ const textosPadraoPorServico = {
 // Carregamento de clientes do Excel
 async function carregarClientesDeExcel() {
     try {
-        const response = await fetch('clientes.xlsx');
+        const response = await fetch('./clientes.xlsx');
         const arrayBuffer = await response.arrayBuffer();
         const data = new Uint8Array(arrayBuffer);
         const workbook = XLSX.read(data, { type: 'array' });

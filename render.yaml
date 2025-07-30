@@ -1,7 +1,0 @@
-services:
-  - type: web
-    name: ProjetoForFire
-    env: node
-    buildCommand: npm install
-    startCommand: npm start
-    branch: main

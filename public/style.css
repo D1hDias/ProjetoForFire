@@ -1,0 +1,513 @@
+/* Estilos gerais */
+body {
+    font-family: Calibri, Arial;
+    background: linear-gradient(to right, #e3e8ef 0%, #f4f6fb 30%, #f4f6fb 70%, #e3e8ef 100%);
+    padding: 90px 0 90px 0;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: url('ff.png') left top/300px no-repeat, url('ff.png') right bottom/300px no-repeat;
+  opacity: 0.04;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.proposal-content,
+.proposal-content p,
+.proposal-content li,
+.proposal-content td,
+.proposal-content th,
+#proposal-preview,
+#proposal-preview p,
+#proposal-preview li,
+#proposal-preview td,
+#proposal-preview th {
+    text-align: justify !important;
+}
+
+.main-container, .container, .app-content {
+  box-shadow: 0 6px 32px 0 rgba(245, 19, 19, 0.11);
+  border-radius: 22px;
+  background: #fff;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Estilos para os cards de controle */
+.card {
+    border: 1px solid #bbb;
+    border-radius: 6px;
+    box-shadow: none;
+    padding: 16px;
+    margin-bottom: 20px;
+    background-color: #fff;
+}
+
+.card-header h5 {
+    font-size: 18px;
+}
+
+.card-header button {
+    font-size: 14,4px;
+}
+
+/* Estilização compacta para a coluna esquerda (no-print) */
+.col-md-4.no-print {
+    font-size: 13.6px; /* Reduz o tamanho da fonte em toda a coluna */
+}
+  
+  .col-md-4.no-print .card {
+    margin-bottom: 10px;  /* Diminui a margem inferior dos cards */
+    padding: 10px;        /* Reduz o padding interno dos cards */
+}
+  
+  .col-md-4.no-print .card .card-header h5 {
+    font-size: 16px;      /* Ajusta o tamanho do título do card */
+    margin-bottom: 5px;
+}
+  
+  .col-md-4.no-print .card-body {
+    padding: 10px;        /* Reduz o espaçamento interno da área dos cards */
+}
+  
+  .col-md-4.no-print .mb-2,
+  .col-md-4.no-print .mb-3,
+  .col-md-4.no-print .mb-4 {
+    margin-bottom: 8px !important; /* Garante espaçamento menor entre os elementos */
+}
+  
+  .col-md-4.no-print .form-label {
+    font-size: 13.6px;   /* Fonte menor para os rótulos */
+    margin-bottom: 3px;
+}
+  
+  .col-md-4.no-print .form-control,
+  .col-md-4.no-print .form-select {
+    font-size: 13.6px;   /* Campo de input com fonte menor */
+    padding: 4px 6px;     /* Padding reduzido para inputs */
+}
+  
+  .col-md-4.no-print .btn {
+    font-size: 12.8px;    /* Botões com fonte um pouco menor */
+    padding: 4px 8px;     /* Menor padding nos botões */
+}
+  
+/* Ajusta altura e padding dos botões de proposta */
+.proposal-btn {
+    height: 32px;           /* Defina a altura desejada */
+    padding: 4px 12px;      /* Ajuste o padding interno para garantir uma proporção agradável */
+    line-height: 1.5;
+}
+
+button.proposal-btn {
+    font-size: 10px !important;
+  }
+
+/* Estilos para os checkboxes */
+.form-check-input[type="checkbox"] {
+    width: 16px !important;
+    height: 16px !important;
+    min-width: 16px;
+    min-height: 16px;
+    margin-top: 3px;
+    cursor: pointer;
+    border: 1px solid #adb5bd;
+    box-sizing: border-box;
+}
+
+.form-check-input[type="checkbox"]:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.form-check-label {
+    padding-left: 4px;
+    cursor: pointer;
+}
+
+.form-check {
+    margin-bottom: 12px;
+    display: flex;
+    align-items: flex-start;
+}
+
+/* Estilos para os modais */
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-dialog {
+    max-width: 700px;
+    margin: 1.75rem auto;
+}
+
+.modal-dialog-centered {
+    min-height: calc(100% - (1.75rem * 2));
+}
+
+/* Estilos para o editor de projeto */
+#quillProjectEditor .ql-container {
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.08);
+}
+
+ul, ol {
+        padding-left: 20px;
+        margin-bottom: 0;
+}
+
+/* Estilos para a pré-visualização da proposta */
+#proposal-preview {
+    width: 794px;
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto;
+    background-color: white;
+    position: relative;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    font-size: 12px;
+    line-height: 1.3;
+    box-sizing: border-box;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+.proposal-body {
+    border: 1px solid #bbb;
+    border-radius: 6px;
+    min-height: auto;
+    background-color: white;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.watermark-logo {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.watermark-logo img {
+  width: 400px; /* ajuste conforme o tamanho desejado no A4 */
+  max-width: 60%;
+  max-height: 70%;
+  opacity: 0.02;
+  user-select: none;
+  pointer-events: none;
+}
+
+.proposal-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Estilos para o cabeçalho da proposta */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    border-bottom: 0.5px solid #ddd;
+    padding-bottom: 10px;
+}
+
+.header-left {
+    font-size: 10px;
+    margin-right: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.header-left img {
+    max-height: 80px;
+    margin-right: 10px;
+}
+
+.header-info {
+    font-size: 10px;
+    line-height: 1.2;
+}
+
+.header-right{
+    margin-right: 0;   /* ou zere o padding, se preferir */
+    text-align: right;
+    font-size: 10px;
+    line-height: 1.5;
+  }
+
+/* Estilos para o rodapé da proposta */
+.footer {
+    margin-top: auto;
+    font-size: 12px;
+    padding-top: 10px;
+}
+
+.footer p {
+    margin-bottom: 20px;
+}
+
+.signature {
+    text-align: left;
+}
+
+/* Estilos para informações da proposta */
+.proposal-date {
+    font-size: 10px;
+    text-align: right;
+    margin: 0;
+}
+
+.proposal-number {
+    text-align: right;
+    margin: 5px 0 20px 0;
+    font-size: 11px;
+}
+
+.proposal-id-line {
+    font-weight: normal;
+    font-size: 10px;
+}
+
+.client-info {
+    font-size: 12px;
+    text-align: left;
+    margin: 10px 0;
+}
+
+/* Estilos para seções específicas */
+#preview-preamble {
+    font-size: 12px;
+    margin-top: 5px;
+    margin-bottom: 22px;
+}
+
+.introduction {
+    text-align: justify;
+    margin-bottom: 20px;
+}
+
+.section-title {
+    font-weight: bold;
+    font-size: 12px;
+    margin-top: 30px;
+    margin-bottom: 5px;
+}
+
+#preview-projects-wrapper,
+#budget-section,
+#preview-observations,
+#preview-clarifications {
+    page-break-before: auto;
+    break-before: auto;
+}
+
+#preview-proposal-reference {
+    margin-bottom: 10px;
+}
+
+/* ─── PROPOSTA – FONTES E TAMANHOS ───────────────────────────────── */
+
+/* 1) Cabeçalho – nome da empresa */
+#preview-company-name {
+  font-family: Calibri, Arial;
+  font-size: 15px;
+}
+
+/* 2) Cabeçalho – endereço, CNPJ, telefone, e-mail, site */
+#preview-company-address,
+#preview-company-cnpj,
+.header-right > div {
+  font-family: Calibri, Arial;
+  font-size: 12px;
+}
+
+/* 3) Conteúdo geral da proposta */
+.proposal-content, #preview-proposal-date, #preview-proposal-header {
+  font-family: Calibri, Arial;
+  font-size: 12px;
+  /* se quiser, especifique também o line-height: */
+  /* line-height: 1.4; */
+}
+
+/* Estilos para itens da proposta */
+.proposal-item {
+    margin-left: 15px;
+    margin-bottom: 3px;
+    font-size: 12px;
+}
+
+.proposal-item-description {
+    margin-left: 20px; 
+    margin-top: 2px;
+    margin-bottom: 30px;
+    font-size: 12px;
+    text-align: justify;
+}
+
+.proposal-item-description p {
+    margin-bottom: 3px;
+    font-size: 12px;
+    text-align: justify;
+}
+
+/* Controle de quebra de página */
+.seletor {
+    break-inside: avoid;
+}
+
+#proposal-structure > div {
+    break-inside: avoid !important;
+    margin-bottom: 12px;
+}
+
+.pageNumber, .page-number, [class*="page-number"], [id*="page-number"] {
+    display: none !important;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  padding: 2px 5px;
+  margin: 0 2px;
+  cursor: pointer;
+  vertical-align: middle;
+  border-radius: 4px;
+  transition: background 0.15s;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-btn.btn-outline-danger:hover,
+.icon-btn.btn-outline-primary:hover,
+.icon-btn.btn-outline-success:hover {
+  background: #f0f0f0;
+}
+
+.icon-btn svg {
+  display: block;
+  stroke: currentColor;
+  pointer-events: none;   /* clique sempre no botão, não no SVG */
+}
+
+.icon-btn.btn-outline-primary { color: #0d6efd; }
+.icon-btn.btn-outline-success { color: #198754; }
+.icon-btn.btn-outline-danger { color: #dc3545; }
+
+/* Calibri para o Quill */
+.ql-font-calibri {
+  font-family: 'Calibri', Arial, sans-serif;
+}
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="calibri"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="calibri"]::before {
+  content: 'Calibri';
+  font-family: 'Calibri', Arial, sans-serif;
+}
+
+/* Estilos para impressão */
+@media print {
+    body {
+        margin: 0;
+        padding: 0;
+    }
+
+    .no-print { display: none !important; }
+    
+    .proposal-body {
+        border: none !important;
+    }
+
+    .proposal-body,
+    #proposal-preview,
+    .proposal-content,
+    .footer {
+        border: none !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+
+    #proposal-preview {
+        width: 100%;
+        max-width: 794px;
+        padding: 10px 15px;
+        border: none !important;
+        box-shadow: none !important;
+    }
+    
+    .proposal-item-description {
+        margin-bottom: 15px;
+    }
+    
+    #proposal-structure > div {
+        margin-bottom: 6px;
+    }
+
+    .signature,
+    .signature img,
+    .footer p {
+        border: none !important;
+        box-shadow: none !important;
+    }
+}
+
+.pdf-generation .proposal-body,
+.pdf-generation #proposal-preview,
+.pdf-generation .proposal-content,
+.pdf-generation .footer,
+.pdf-generation .signature {
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* ====== LOADER NO BOTÃO PDF ====== */
+#print-button {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+#print-button.loading {
+    background: linear-gradient(90deg, #28a745 0%, #20c997 50%, #28a745 100%) !important;
+    background-size: 200% 100%;
+    animation: buttonProgress 2s ease-in-out infinite;
+    color: white !important;
+    pointer-events: none;
+}
+
+#print-button.loading::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: shine 1.5s ease-in-out infinite;
+}
+
+@keyframes buttonProgress {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+@keyframes shine {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+

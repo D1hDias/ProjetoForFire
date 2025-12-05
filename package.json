@@ -1,0 +1,28 @@
+{
+  "name": "forfire-pdf-generator",
+  "version": "1.0.0",
+  "description": "Gerador de PDF para propostas FORFIRE usando Puppeteer",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.10.0",
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "puppeteer": "^24.8.2",
+    "puppeteer-core": "^21.5.2",
+    "sqlite3": "^5.1.7",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": "18.x"
+  },
+  "license": "ISC",
+  "author": ""
+}

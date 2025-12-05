@@ -793,89 +793,143 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const savedProposalsModal = new bootstrap.Modal(document.getElementById('savedProposalsModal'));
 
+    // Array global para armazenar todas as propostas carregadas
+    let todasPropostas = [];
+
+    // Função para renderizar propostas com filtros aplicados
+    function renderizarPropostas(propostas) {
+        const listContainer = document.getElementById('saved-proposals-list');
+        listContainer.innerHTML = '';
+
+        if (propostas.length === 0) {
+            listContainer.innerHTML = '<li class="list-group-item text-muted">Nenhuma proposta encontrada com os filtros aplicados.</li>';
+            return;
+        }
+
+        propostas.forEach(dados => {
+            const item = document.createElement('li');
+            const nomeCliente = (mapaClientes[dados.cliente] || {}).nome || dados.cliente;
+            item.className = 'list-group-item d-flex align-items-start position-relative';
+
+            // Adicionar data-attributes para facilitar filtragem
+            item.dataset.cliente = nomeCliente.toLowerCase();
+            item.dataset.responsavel = (dados.usuario || '').toLowerCase();
+
+            item.innerHTML = `
+            <!-- checkbox de seleção -->
+            <input class="form-check-input me-2 select-proposal"
+                    type="checkbox" value="${dados.numero}">
+
+            <!-- texto da proposta -->
+            <div class="flex-grow-1">
+                <div>
+                <strong>${dados.numero}</strong> – ${dados.tipo}
+                ${dados.cliente ? ' | <span style="color:#007bff">' + nomeCliente + '</span>' : ''}
+                </div>
+                <div class="text-muted">${dados.referencia || '(Sem referência)'}</div>
+                <div class="text-muted small">Responsável: <strong>${dados.usuario || '-'}</strong></div>
+            </div>
+
+            <!-- grupo de botões, colado à direita -->
+            <div class="position-absolute top-0 end-0 d-flex">
+                <button title="Carregar"
+                        class="icon-btn btn-outline-primary me-1"
+                        data-load="${dados.numero}">
+                <svg width="18" height="18" fill="none" stroke="currentColor"
+                    stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M12 5v14m7-7H5" />
+                </svg>
+                </button>
+
+                <button title="Duplicar"
+                        class="icon-btn btn-outline-success me-1"
+                        data-duplicate="${dados.numero}">
+                <svg width="18" height="18" fill="none" stroke="currentColor"
+                    stroke-width="2" viewBox="0 0 24 24">
+                    <rect x="9" y="9" width="13" height="13" rx="2" />
+                    <rect x="3" y="3" width="13" height="13" rx="2" />
+                </svg>
+                </button>
+
+                <button title="Excluir"
+                        class="icon-btn btn-outline-danger"
+                        data-delete="${dados.numero}">
+                <svg width="18" height="18" fill="none" stroke="currentColor"
+                    stroke-width="2" viewBox="0 0 24 24">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+                </button>
+            </div>
+            `;
+
+            listContainer.appendChild(item);
+        });
+
+        // Atualizar contador
+        const counter = document.getElementById('filter-counter');
+        counter.textContent = `Mostrando ${propostas.length} de ${todasPropostas.length} proposta${todasPropostas.length !== 1 ? 's' : ''}`;
+    }
+
+    // Função para aplicar filtros
+    function aplicarFiltros() {
+        const filtroCliente = document.getElementById('filter-client').value.toLowerCase().trim();
+        const filtroResponsavel = document.getElementById('filter-responsible').value.toLowerCase().trim();
+
+        const propostasFiltradas = todasPropostas.filter(proposta => {
+            const nomeCliente = ((mapaClientes[proposta.cliente] || {}).nome || proposta.cliente).toLowerCase();
+            const responsavel = (proposta.usuario || '').toLowerCase();
+
+            const matchCliente = !filtroCliente || nomeCliente.includes(filtroCliente);
+            const matchResponsavel = !filtroResponsavel || responsavel.includes(filtroResponsavel);
+
+            return matchCliente && matchResponsavel;
+        });
+
+        renderizarPropostas(propostasFiltradas);
+    }
+
+    // Event listener para abrir modal e carregar propostas
     document.getElementById('open-saved-proposals').addEventListener('click', async () => {
-    const listContainer = document.getElementById('saved-proposals-list');
-    listContainer.innerHTML = '';
+        const listContainer = document.getElementById('saved-proposals-list');
+        listContainer.innerHTML = '<li class="list-group-item text-muted">Carregando...</li>';
 
-let dados = [];
-try {
-  const res = await fetch('/api/proposals');
-  if (!res.ok) throw new Error('Falha na API');
-  dados = await res.json();                   // ← array vindo do servidor
-} catch (err) {
-  console.error(err);
-  listContainer.innerHTML =
-    '<li class="list-group-item text-danger">Erro ao carregar propostas.</li>';
-  savedProposalsModal.show();
-  return;
-}
+        try {
+            const res = await fetch('/api/proposals');
+            if (!res.ok) throw new Error('Falha na API');
+            todasPropostas = await res.json();
+        } catch (err) {
+            console.error(err);
+            listContainer.innerHTML = '<li class="list-group-item text-danger">Erro ao carregar propostas.</li>';
+            savedProposalsModal.show();
+            return;
+        }
 
-if (dados.length === 0) {
-  listContainer.innerHTML =
-    '<li class="list-group-item text-muted">Nenhuma proposta salva.</li>';
-  savedProposalsModal.show();
-  return;
-}
+        if (todasPropostas.length === 0) {
+            listContainer.innerHTML = '<li class="list-group-item text-muted">Nenhuma proposta salva.</li>';
+            document.getElementById('filter-counter').textContent = 'Mostrando 0 de 0 propostas';
+            savedProposalsModal.show();
+            return;
+        }
 
-dados.forEach(dados => {
-  const item = document.createElement('li');
-  const nomeCliente = (mapaClientes[dados.cliente] || {}).nome || dados.cliente;
-  item.className = item.className = 'list-group-item d-flex align-items-start position-relative';
+        // Limpar filtros ao abrir
+        document.getElementById('filter-client').value = '';
+        document.getElementById('filter-responsible').value = '';
 
-    item.innerHTML = `
-    <!-- checkbox de seleção -->
-    <input class="form-check-input me-2 select-proposal"
-            type="checkbox" value="${dados.numero}">
+        // Renderizar todas as propostas
+        renderizarPropostas(todasPropostas);
 
-    <!-- texto da proposta -->
-    <div class="flex-grow-1">
-        <div>
-        <strong>${dados.numero}</strong> – ${dados.tipo}
-        ${dados.cliente ? ' | <span style="color:#007bff">' + nomeCliente + '</span>' : ''}
-        </div>
-        <div class="text-muted">${dados.referencia || '(Sem referência)'}</div>
-        <div class="text-muted small">Responsável: <strong>${dados.usuario || '-'}</strong></div>
-    </div>
+        savedProposalsModal.show();
+    });
 
-    <!-- grupo de botões, colado à direita -->
-    <div class="position-absolute top-0 end-0 d-flex">
-        <button title="Carregar"
-                class="icon-btn btn-outline-primary me-1"
-                data-load="${dados.numero}">
-        <svg width="18" height="18" fill="none" stroke="currentColor"
-            stroke-width="2" viewBox="0 0 24 24">
-            <path d="M12 5v14m7-7H5" />
-        </svg>
-        </button>
+    // Event listeners para filtros
+    document.getElementById('filter-client').addEventListener('input', aplicarFiltros);
+    document.getElementById('filter-responsible').addEventListener('input', aplicarFiltros);
 
-        <button title="Duplicar"
-                class="icon-btn btn-outline-success me-1"
-                data-duplicate="${dados.numero}">
-        <svg width="18" height="18" fill="none" stroke="currentColor"
-            stroke-width="2" viewBox="0 0 24 24">
-            <rect x="9" y="9" width="13" height="13" rx="2" />
-            <rect x="3" y="3" width="13" height="13" rx="2" />
-        </svg>
-        </button>
-
-        <button title="Excluir"
-                class="icon-btn btn-outline-danger"
-                data-delete="${dados.numero}">
-        <svg width="18" height="18" fill="none" stroke="currentColor"
-            stroke-width="2" viewBox="0 0 24 24">
-            <line x1="18" y1="6" x2="6" y2="18"/>
-            <line x1="6" y1="6" x2="18" y2="18"/>
-        </svg>
-        </button>
-    </div>
-    `;
-
-
-  listContainer.appendChild(item);
-});
-
-savedProposalsModal.show();
-
+    document.getElementById('clear-filters').addEventListener('click', () => {
+        document.getElementById('filter-client').value = '';
+        document.getElementById('filter-responsible').value = '';
+        aplicarFiltros();
     });
 
     // Função para carregar uma proposta no formulário

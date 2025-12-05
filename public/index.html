@@ -556,8 +556,38 @@
             <h5 class="modal-title" id="savedProposalsModalLabel">Minhas Propostas Salvas</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
-            <div class="modal-body">
+
+            <!-- Área de Filtros -->
+            <div class="modal-body pb-0">
+                <div class="card mb-3">
+                    <div class="card-body py-2">
+                        <div class="row g-2 align-items-end">
+                            <div class="col-md-5">
+                                <label for="filter-client" class="form-label small mb-1">🔍 Filtrar por Cliente</label>
+                                <input type="text" class="form-control form-control-sm" id="filter-client" placeholder="Digite o nome do cliente...">
+                            </div>
+                            <div class="col-md-5">
+                                <label for="filter-responsible" class="form-label small mb-1">👤 Filtrar por Responsável</label>
+                                <input type="text" class="form-control form-control-sm" id="filter-responsible" placeholder="Digite o nome do responsável...">
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-sm btn-outline-secondary w-100" id="clear-filters">
+                                    Limpar
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <small class="text-muted" id="filter-counter">Mostrando 0 de 0 propostas</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lista de Propostas -->
+            <div class="modal-body pt-0">
             <ul class="list-group" id="saved-proposals-list"></ul>
+            </div>
+
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger me-auto" id="delete-selected" disabled>
                     Excluir selecionadas

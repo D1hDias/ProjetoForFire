@@ -550,49 +550,49 @@
 
     <!-- Modal Minhas Propostas -->
     <div class="modal fade" id="savedProposalsModal" tabindex="-1" aria-labelledby="savedProposalsModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header">
-            <h5 class="modal-title" id="savedProposalsModalLabel">Minhas Propostas Salvas</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content" style="max-height: 90vh;">
+            <div class="modal-header py-2">
+                <h5 class="modal-title" id="savedProposalsModalLabel">Minhas Propostas Salvas</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
 
-            <!-- Área de Filtros -->
-            <div class="modal-body pb-0">
-                <div class="card mb-3">
-                    <div class="card-body py-2">
-                        <div class="row g-2 align-items-end">
-                            <div class="col-md-5">
-                                <label for="filter-client" class="form-label small mb-1">🔍 Filtrar por Cliente</label>
-                                <input type="text" class="form-control form-control-sm" id="filter-client" placeholder="Digite o nome do cliente...">
-                            </div>
-                            <div class="col-md-5">
-                                <label for="filter-responsible" class="form-label small mb-1">👤 Filtrar por Responsável</label>
-                                <input type="text" class="form-control form-control-sm" id="filter-responsible" placeholder="Digite o nome do responsável...">
-                            </div>
-                            <div class="col-md-2">
-                                <button type="button" class="btn btn-sm btn-outline-secondary w-100" id="clear-filters">
-                                    Limpar
-                                </button>
-                            </div>
+            <!-- Área de Filtros Compacta -->
+            <div class="modal-body py-2" style="background-color: #f8f9fa; border-bottom: 1px solid #dee2e6;">
+                <div class="row g-2 align-items-center">
+                    <div class="col-md-4 col-sm-6">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text">🔍</span>
+                            <input type="text" class="form-control" id="filter-client" placeholder="Buscar cliente...">
                         </div>
-                        <div class="mt-2">
-                            <small class="text-muted" id="filter-counter">Mostrando 0 de 0 propostas</small>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text">👤</span>
+                            <input type="text" class="form-control" id="filter-responsible" placeholder="Buscar responsável...">
                         </div>
+                    </div>
+                    <div class="col-md-2 col-sm-6">
+                        <button type="button" class="btn btn-sm btn-outline-secondary w-100" id="clear-filters">
+                            <i class="fas fa-times"></i> Limpar
+                        </button>
+                    </div>
+                    <div class="col-md-2 col-sm-6">
+                        <small class="text-muted d-block text-end" id="filter-counter" style="line-height: 31px;">0 de 0</small>
                     </div>
                 </div>
             </div>
 
             <!-- Lista de Propostas -->
-            <div class="modal-body pt-0">
-            <ul class="list-group" id="saved-proposals-list"></ul>
+            <div class="modal-body pt-2" style="overflow-y: auto; max-height: calc(90vh - 180px);">
+                <ul class="list-group list-group-flush" id="saved-proposals-list"></ul>
             </div>
 
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger me-auto" id="delete-selected" disabled>
-                    Excluir selecionadas
+            <div class="modal-footer py-2">
+                <button type="button" class="btn btn-danger btn-sm me-auto" id="delete-selected" disabled>
+                    <i class="fas fa-trash"></i> Excluir selecionadas
                 </button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Fechar</button>
             </div>
         </div>
         </div>

@@ -866,9 +866,9 @@ document.addEventListener('DOMContentLoaded', function () {
             listContainer.appendChild(item);
         });
 
-        // Atualizar contador
+        // Atualizar contador (formato compacto)
         const counter = document.getElementById('filter-counter');
-        counter.textContent = `Mostrando ${propostas.length} de ${todasPropostas.length} proposta${todasPropostas.length !== 1 ? 's' : ''}`;
+        counter.textContent = `${propostas.length} de ${todasPropostas.length}`;
     }
 
     // Função para aplicar filtros
@@ -907,7 +907,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (todasPropostas.length === 0) {
             listContainer.innerHTML = '<li class="list-group-item text-muted">Nenhuma proposta salva.</li>';
-            document.getElementById('filter-counter').textContent = 'Mostrando 0 de 0 propostas';
+            document.getElementById('filter-counter').textContent = '0 de 0';
             savedProposalsModal.show();
             return;
         }
